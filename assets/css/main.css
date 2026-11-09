@@ -1,0 +1,311 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* UTILITÁRIO DE VISIBILIDADE */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   FASE 1 & 2: TELA DE LOGIN (DARK NAVY / PREMIUM)
+   ========================================================================== */
+#auth-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 30% 50%, #1e293b 0%, #090d16 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-card {
+  position: relative;
+  width: 900px;
+  height: 520px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg, 20px);
+  display: flex;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.login-brand-panel {
+  flex: 1.2;
+  background: radial-gradient(circle at 20% 40%, rgba(0, 102, 255, 0.25) 0%, transparent 70%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px;
+  position: relative;
+}
+
+.login-brand-panel .logo-text {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-white);
+  letter-spacing: -0.5px;
+}
+.login-brand-panel .logo-text span { color: var(--primary); }
+
+.login-brand-graphic {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 40px solid var(--primary);
+  border-right-color: transparent;
+  transform: rotate(-35deg);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 20px rgba(0, 102, 255, 0.4));
+  margin: auto;
+}
+
+.login-form-panel {
+  flex: 1;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.login-form-panel h2 {
+  color: var(--text-white);
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.login-form-panel p {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 28px;
+}
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-control {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--text-main);
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+/* ==========================================================================
+   FASE 3: LAYOUT PRINCIPAL & ADAPTAÇÃO DINÂMICA AO TEMA ESCURO
+   ========================================================================== */
+#app-screen {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+sidebar {
+  width: 250px;
+  background: var(--bg-dark, #0f172a);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 16px;
+  border-right: 1px solid var(--border-color);
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-white, #fff);
+  padding: 0 12px 24px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.brand span { color: var(--primary); }
+
+.menu-group { margin-top: 20px; }
+
+.menu-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 12px 8px 12px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.2s;
+  margin-bottom: 2px;
+}
+
+.menu-item:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.menu-item.active {
+  color: #ffffff;
+  background: var(--primary);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bg-light);
+  color: var(--text-main);
+}
+
+navbar {
+  height: 64px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Breadcrumb */
+#breadcrumb span {
+  color: var(--text-muted);
+}
+
+/* Dropdown de Notificações */
+#notif-dropdown {
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background-color: var(--bg-light);
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   CORREÇÃO GLOBAL E ESPECÍFICA PARA O MODO ESCURO (CARDS, RELATÓRIOS E TABELAS)
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-surface: #111827 !important;
+  --bg-light: #090d16 !important;
+  --text-main: #f3f4f6 !important;
+  --text-muted: #9ca3af !important;
+  --border-color: #1f2937 !important;
+}
+
+/* Apanha blocos e cartões dentro da área de conteúdo (.content) */
+[data-theme="dark"] .content div[style*="background"],
+[data-theme="dark"] .content section > div {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .content h1, 
+[data-theme="dark"] .content h2, 
+[data-theme="dark"] .content h3, 
+[data-theme="dark"] .content h4, 
+[data-theme="dark"] .content p, 
+[data-theme="dark"] .content span {
+  color: inherit;
+}
+
+/* Tabelas e células no modo escuro */
+[data-theme="dark"] table {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] th {
+  background-color: #1f2937 !important;
+  color: var(--text-muted) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] td {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Garante que badges/spans dentro das tabelas fiquem legíveis no modo escuro */
+[data-theme="dark"] td span:not([class*="badge-"]) {
+  background-color: #1f2937 !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: 6px;
+}

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcclesiaSys - Gestão Eclesiástica</title>
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <style>
+    body, html {
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    #app-screen {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    sidebar {
+      width: 260px;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      transition: width 0.3s ease, transform 0.3s ease;
+      z-index: 100;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border-color);
+    }
+
+    sidebar > div:first-child {
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+      padding-right: 5px;
+    }
+
+    #app-screen.sidebar-collapsed sidebar {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+      transform: translateX(-100%);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-light);
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .btn-sair-sistema {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ef4444;
+      border-radius: 6px;
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.05);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-sair-sistema:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .config-card {
+      background-color: var(--bg-surface, #1e293b);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .config-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+
+    .config-card p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .config-detail-panel {
+      background-color: var(--bg-surface, #1e293b);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE LOGIN COM VALIDAÇÃO DE ESTADO BLOQUEADO E SENHAS -->
+  <div id="auth-screen">
+    <div class="login-card">
+      <div class="login-brand-panel">
+        <div class="logo-text">⛪ Ecclesia<span>Sys</span></div>
+        <div class="login-brand-graphic"></div>
+        <p style="color:#64748b; font-size:12px;">Gestão Eclesiástica Integrada Offline</p>
+      </div>
+
+      <div class="login-form-panel">
+        <h2>LOGIN</h2>
+        <p>Introduza as suas credenciais de acesso</p>
+
+        <form onsubmit="event.preventDefault(); FazerLoginComValidacao();">
+          <div class="input-group">
+            <label>Utilizador</label>
+            <input type="text" id="login-user" class="input-control" placeholder="Digite o seu utilizador" required>
+          </div>
+
+          <div class="input-group">
+            <label>Palavra-passe</label>
+            <input type="password" id="login-pass" class="input-control" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%;">Entrar no Sistema</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICAÇÃO PRINCIPAL -->
+  <div id="app-screen" class="hidden">
+    <sidebar>
+      <div>
+        <div class="brand">ECCLESIASYS_GEST</div>
+
+        <!-- PERFIL DO USUÁRIO NA SIDEBAR -->
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          <div id="sidebar-user-initial" style="width: 36px; height: 36px; border-radius: 50%; background: #cbd5e1; color: #1e293b; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; flex-shrink: 0; overflow:hidden;">
+            👤
+          </div>
+          <div style="overflow: hidden;">
+            <div id="sidebar-user-name" style="color: #ffffff; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Utilizador</div>
+            <span id="sidebar-user-role" style="display: inline-block; background: #334155; color: #94a3b8; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 2px; font-weight: 600;">Perfil</span>
+          </div>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">Principal</div>
+          <a class="menu-item active" onclick="navigate('dashboard')">🏠 PAINEL PRINCIPAL</a>
+        </div>
+
+        <!-- MENU DINÂMICO DE ACORDO COM O PERFIL LOGADO -->
+        <div id="menu-secao-igreja" class="menu-group">
+          <div class="menu-title">Gestão da Igreja</div>
+          <a class="menu-item" onclick="navigate('membros')">👥 Membros</a>
+          <a class="menu-item" onclick="navigate('ministerio')">👨‍💼 Ministério</a>
+          <a class="menu-item" onclick="navigate('cultos')">⛪ Cultos e Eventos</a>
+          <a class="menu-item" onclick="navigate('departamentos')">🏛️ Departamentos</a>
+        </div>
+
+        <div id="menu-secao-financeiro" class="menu-group">
+          <div class="menu-title">Financeiro</div>
+          <a class="menu-item" onclick="navigate('financeiro')">💰 Financeiro</a>
+        </div>
+
+        <div id="menu-secao-admin" class="menu-group">
+          <div class="menu-title">Administração</div>
+          <a class="menu-item" onclick="navigate('patrimonio')">🏛 Património</a>
+          <a class="menu-item" onclick="navigate('relatorios')">📊 Relatórios</a>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-title">Sistema</div>
+          <a class="menu-item" onclick="navigate('configuracoes')">⚙️ Configurações</a>
+        </div>
+      </div>
+
+      <div style="padding-top:15px; border-top:1px solid var(--border-dark, #334155);">
+        <a class="btn-sair-sistema" onclick="FazerLogout()">
+          <span>↳</span> Sair do Sistema
+        </a>
+      </div>
+    </sidebar>
+
+    <main>
+      <navbar style="display:flex; justify-content:space-between; align-items:center; padding:12px 25px; background:var(--bg-surface); border-bottom:1px solid var(--border-color); flex-shrink:0;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button onclick="document.getElementById('app-screen').classList.toggle('sidebar-collapsed')" title="Esconder/Mostrar Menu" style="background:none; border:none; color:var(--success); font-size:18px; cursor:pointer; font-weight:bold;">◀</button>
+          <div id="breadcrumb" style="font-size:13px; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+            <span>Início</span> / <strong id="breadcrumb-current" style="color:var(--text-main); font-weight:600;">PAINEL PRINCIPAL</strong>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:20px;">
+          <div style="display:flex; align-items:center; gap:10px; border-left:1px solid var(--border-color); padding-left:15px;">
+            <div id="header-user-avatar" style="width:34px; height:34px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; overflow:hidden;">M</div>
+            <div>
+              <div style="font-size:13px; font-weight:700; color:var(--text-main);" id="current-user">Maria Emilia</div>
+              <small style="color:var(--text-muted); font-size:10px; display:block;" id="header-user-role">Tesouraria</small>
+            </div>
+          </div>
+        </div>
+      </navbar>
+
+      <div class="content">
+        <section id="view-dashboard" class="hidden"></section>
+        <section id="view-membros" class="hidden"></section>
+        <section id="view-ministerio" class="hidden"></section>
+        <section id="view-cultos" class="hidden"></section>
+        <section id="view-departamentos" class="hidden"></section>
+        <section id="view-financeiro" class="hidden"></section>
+        <section id="view-patrimonio" class="hidden"></section>
+        <section id="view-relatorios" class="hidden"></section>
+        <section id="view-configuracoes" class="hidden"></section>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/db.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/modules/dashboard.js"></script>
+  <script src="assets/js/modules/membros.js"></script>
+  <script src="assets/js/modules/ministerio.js"></script>
+  <script src="assets/js/modules/cultos.js"></script>
+  <script src="assets/js/modules/departamentos.js"></script>
+  <script src="assets/js/modules/financeiro.js"></script>
+  <script src="assets/js/modules/patrimonio.js"></script>
+  <script src="assets/js/modules/relatorios.js"></script>
+  <script src="assets/js/modules/configuracoes.js"></script>
+
+  <script>
+    function obterListaUtilizadores() {
+      let raw = localStorage.getItem('ecclesia_usuarios') || localStorage.getItem('usuarios');
+      let usuarios = [];
+      try { usuarios = JSON.parse(raw) || []; } catch (e) { usuarios = []; }
+      usuarios = usuarios.filter(u => u && typeof u === 'object' && u.usuario);
+
+      if (usuarios.length === 0) {
+        usuarios = [
+          { id: 1, nome: "Emanuel Miguel Capitango Manuel", usuario: "admin", senha: "123", perfil: "Administrador", estado: "Ativo" },
+          { id: 2, nome: "Maria Emilia", usuario: "tesouraria", senha: "123", perfil: "Tesouraria", estado: "Ativo" },
+          { id: 3, nome: "Secretário Geral", usuario: "secretaria", senha: "123", perfil: "Secretário", estado: "Ativo" },
+          { id: 4, nome: "Membro Geral", usuario: "membro", senha: "123", perfil: "Membro", estado: "Ativo" }
+        ];
+        localStorage.setItem('ecclesia_usuarios', JSON.stringify(usuarios));
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      }
+      return usuarios;
+    }
+
+    function FazerLoginComValidacao() {
+      const userIn = document.getElementById('login-user').value.trim().toLowerCase();
+      const passIn = document.getElementById('login-pass').value;
+
+      const lista = obterListaUtilizadores();
+      const match = lista.find(u => u.usuario.toLowerCase() === userIn && String(u.senha) === String(passIn));
+
+      if (!match) {
+        alert("Credenciais incorretas! Verifique o utilizador e a palavra-passe.");
+        return;
+      }
+
+      // 4. VERIFICAÇÃO RIGOROSA DO ESTADO BLOQUEADO
+      if (match.estado === "Bloqueado") {
+        alert("A sua conta está BLOQUEADA pelo administrador do sistema!");
+        return;
+      }
+
+      localStorage.setItem('ecclesia_usuario_logado', JSON.stringify(match));
+      ProsseguirAberturaSistema(match);
+    }
+
+    function ProsseguirAberturaSistema(user) {
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+      sincronizarPerfilEmTempoReal();
+      if (window.navigate) navigate('dashboard');
+    }
+
+    function FazerLogout() {
+      localStorage.removeItem('ecclesia_usuario_logado');
+      document.getElementById('app-screen').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+
+    function sincronizarPerfilEmTempoReal() {
+      const sessaoRaw = localStorage.getItem('ecclesia_usuario_logado');
+      if (!sessaoRaw) return;
+
+      let userLogado = JSON.parse(sessaoRaw);
+      const nome = userLogado.nome || userLogado.usuario || "Utilizador";
+      const perfil = userLogado.perfil || "Utilizador";
+      const inicial = nome.charAt(0).toUpperCase();
+
+      document.getElementById('sidebar-user-name').textContent = nome;
+      document.getElementById('sidebar-user-role').textContent = perfil;
+      document.getElementById('current-user').textContent = nome;
+      document.getElementById('header-user-role').textContent = perfil;
+
+      const sbInit = document.getElementById('sidebar-user-initial');
+      const hdAvatar = document.getElementById('header-user-avatar');
+
+      if (userLogado.foto) {
+        sbInit.innerHTML = `<img src="${userLogado.foto}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+        hdAvatar.innerHTML = `<img src="${userLogado.foto}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+      } else {
+        sbInit.textContent = inicial;
+        hdAvatar.textContent = inicial;
+      }
+
+      // APLICA RESTRIÇÕES NOS MENUS E NO DASHBOARD
+      aplicarRestricoesPerfil(perfil);
+    }
+
+    // 1. RESTRIÇÃO DE MÓDULOS E ELEMENTOS DO DASHBOARD CONFORME AS IMAGENS ENVIADAS
+    function aplicarRestricoesPerfil(perfil) {
+      const secIgreja = document.getElementById('menu-secao-igreja');
+      const secFin = document.getElementById('menu-secao-financeiro');
+      const secAdmin = document.getElementById('menu-secao-admin');
+
+      if (perfil === 'Administrador') {
+        if (secIgreja) secIgreja.style.display = 'block';
+        if (secFin) secFin.style.display = 'block';
+        if (secAdmin) secAdmin.style.display = 'block';
+      } else if (perfil === 'Tesouraria') {
+        if (secIgreja) secIgreja.style.display = 'none';
+        if (secFin) secFin.style.display = 'block';
+        if (secAdmin) secAdmin.style.display = 'none';
+      } else if (perfil === 'Secretário') {
+        if (secIgreja) secIgreja.style.display = 'block';
+        if (secFin) secFin.style.display = 'none';
+        if (secAdmin) secAdmin.style.display = 'none';
+      } else {
+        if (secIgreja) secIgreja.style.display = 'none';
+        if (secFin) secFin.style.display = 'none';
+        if (secAdmin) secAdmin.style.display = 'none';
+      }
+
+      // FILTRAGEM VISUAL DE ELEMENTOS DENTRO DO DASHBOARD PRINCIPAL
+      setTimeout(() => {
+        const viewDash = document.getElementById('view-dashboard');
+        if (!viewDash) return;
+
+        // Se for Tesouraria (Sinalizações da Imagem 1)
+        if (perfil === 'Tesouraria') {
+          ocultarElementoPorTexto(viewDash, 'Próximos Cultos');
+          ocultarElementoPorTexto(viewDash, 'ÚLTIMOS CADASTROS');
+          ocultarElementoPorTexto(viewDash, 'ANIVERSARIANTES DO MÊS');
+          ocultarBotaoPorTexto(viewDash, 'Gerir Membros');
+          ocultarBotaoPorTexto(viewDash, 'Agendar Culto');
+        }
+
+        // Se for Secretário (Sinalizações da Imagem 2)
+        if (perfil === 'Secretário') {
+          ocultarElementoPorTexto(viewDash, 'SALDO EM CAIXA');
+          ocultarElementoPorTexto(viewDash, 'Resumo de Caixa');
+          ocultarBotaoPorTexto(viewDash, 'Registar Dízimo');
+        }
+
+        // Se for Membro Geral (Sinalizações da Imagem 3)
+        if (perfil === 'Membro') {
+          ocultarElementoPorTexto(viewDash, 'SALDO EM CAIXA');
+          ocultarElementoPorTexto(viewDash, 'ÚLTIMOS CADASTROS');
+          ocultarElementoPorTexto(viewDash, 'Resumo de Caixa');
+          ocultarElementoPorTexto(viewDash, 'Ações Rápidas');
+        }
+      }, 100);
+    }
+
+    function ocultarElementoPorTexto(parent, texto) {
+      const elementos = parent.querySelectorAll('div, h3, h2, table, section, .card');
+      elementos.forEach(el => {
+        if (el.children.length === 0 || el.tagName === 'H3' || el.tagName === 'H2') {
+          if (el.textContent.includes(texto)) {
+            const card = el.closest('.card, .bg-surface, [style*="border"], div[class*="box"]') || el.parentElement;
+            if (card) card.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    function ocultarBotaoPorTexto(parent, texto) {
+      const botoes = parent.querySelectorAll('button, a');
+      botoes.forEach(b => {
+        if (b.textContent.includes(texto)) {
+          b.style.display = 'none';
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      obterListaUtilizadores();
+      const sessao = localStorage.getItem('ecclesia_usuario_logado');
+      if (sessao) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-screen').classList.remove('hidden');
+        sincronizarPerfilEmTempoReal();
+      }
+    });
+  </script>
+</body>
+</html>

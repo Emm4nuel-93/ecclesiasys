@@ -1,0 +1,189 @@
+/* ==========================================================================
+   FASE 1: IDENTIDADE VISUAL & PALETA DE CORES (ECCLESIASYS)
+   ========================================================================== */
+
+/* Tema Claro (Padrão) */
+:root {
+  --bg-dark: #0f172a;          
+  --bg-dark-card: #1e293b;     
+  --bg-light: #f8fafc;         
+  --bg-surface: #ffffff;       
+
+  --primary: #2563eb;          
+  --primary-hover: #1d4ed8;    
+  --accent: #0284c7;           
+
+  --success: #16a34a;          
+  --warning: #ca8a04;          
+  --danger: #dc2626;           
+
+  --text-main: #0f172a;        
+  --text-muted: #64748b;       
+  --text-white: #ffffff;
+
+  --border-color: #e2e8f0;     
+  --bg-input: #ffffff;
+  --bg-table-header: #f8fafc;
+
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   TEMA ESCURO PROFISSIONAL (DARK SLATE GLOBAL)
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-light: #090d16;         
+  --bg-surface: #111827;       
+  --bg-dark: #070a10;          
+
+  --text-main: #f3f4f6;        
+  --text-muted: #9ca3af;       
+
+  --border-color: #1f2937;     
+  --bg-input: #1f2937;         
+  --bg-table-header: #1f2937;  
+
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+}
+
+/* Aplicação Global do Tema */
+body {
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  margin: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* CORREÇÃO GLOBAL PARA TODOS OS MÓDULOS NO MODO ESCURO */
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2, 
+[data-theme="dark"] h3, 
+[data-theme="dark"] h4, 
+[data-theme="dark"] strong, 
+[data-theme="dark"] span, 
+[data-theme="dark"] p, 
+[data-theme="dark"] div {
+  color: inherit; 
+}
+
+[data-theme="dark"] .content section div[style*="background: var(--bg-surface)"],
+[data-theme="dark"] .content section div[style*="background:var(--bg-surface)"],
+[data-theme="dark"] .content section > div {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .content h2,
+[data-theme="dark"] .content h3 {
+  color: var(--text-main) !important;
+}
+
+/* Campos de formulário e inputs */
+input, select, textarea {
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+}
+
+/* Tabelas */
+table {
+  color: var(--text-main);
+}
+
+th {
+  background-color: var(--bg-table-header);
+  color: var(--text-muted);
+}
+
+td {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   BOTÕES DE AÇÃO UNIFICADOS NAS TABELAS
+   ========================================================================== */
+.action-buttons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-action {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #ffffff;
+  transition: opacity 0.2s;
+}
+
+.btn-action:hover {
+  opacity: 0.85;
+}
+
+/* Cores específicas por ação */
+.btn-action.view { background-color: #0284c7; } /* Azul (Visualizar / Ficha) */
+.btn-action.print { background-color: #7c3aed; } /* Roxo (Imprimir) */
+.btn-action.edit { background-color: #2563eb; } /* Azul claro (Editar) */
+.btn-action.delete { background-color: #dc2626; } /* Vermelho (Eliminar) */
+
+
+/* ==========================================================================
+   MENU LATERAL MODERNO (RECOLHIMENTO INTELIGENTE)
+   ========================================================================== */
+sidebar {
+  width: 260px;
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  transition: width 0.3s ease;
+  z-index: 100;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+/* Estado Recolhido Moderno: Fica com uma largura estreita exibindo apenas os ícones */
+#app-screen.sidebar-collapsed sidebar {
+  width: 70px;
+  padding: 20px 10px;
+}
+
+/* Esconde textos e títulos de grupos quando recolhido, mantendo os ícones limpos */
+#app-screen.sidebar-collapsed sidebar .brand span,
+#app-screen.sidebar-collapsed sidebar .menu-title,
+#app-screen.sidebar-collapsed sidebar .menu-item span:not(:first-child),
+#app-screen.sidebar-collapsed sidebar div[style*="border-top"] span {
+  display: none;
+}
+
+#app-screen.sidebar-collapsed sidebar .brand {
+  font-size: 18px;
+  text-align: center;
+}
+
+#app-screen.sidebar-collapsed sidebar .menu-item {
+  justify-content: center;
+  padding: 10px 0;
+  font-size: 18px;
+}
